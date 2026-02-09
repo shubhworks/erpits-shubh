@@ -35,8 +35,9 @@ export const signupValidationSchema = z.object({
 });
 
 export const signinValidationSchema = z.object({
-    email: z
-        .email({ message: "Invalid email address" }),
+    username: z
+        .string()
+        .min(3, { message: "Username must be at least 3 characters long" }),
 
     password: z
         .string()

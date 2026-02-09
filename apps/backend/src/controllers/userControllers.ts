@@ -31,16 +31,30 @@ export const signup = async (req: Request, res: Response) => {
 
         const { username, email, password } = result.data;
 
-        // Checking if user already exists
-        const user_existance = await prisma.user.findUnique({
+        // Checking if user already exists by email
+        const user_existance_email = await prisma.user.findUnique({
             where: {
                 email
             }
         })
 
-        if (user_existance) {
+        if (user_existance_email) {
             res.status(400).json({
                 message: `User already exists with email ${email}`
+            })
+            return;
+        }
+
+        // Checking if user already exists by username
+        const user_existance_username = await prisma.user.findUnique({
+            where: {
+                username
+            }
+        })
+
+        if (user_existance_username) {
+            res.status(400).json({
+                message: `Username "${username}" is already taken`
             })
             return;
         }
@@ -140,18 +154,18 @@ export const signin = async (req: Request, res: Response) => {
             return;
         }
 
-        const { email, password } = validationResult.data;
+        const { username, password } = validationResult.data;
 
         // Find the user in the database
         const user = await prisma.user.findUnique({
             where: {
-                email
+                username
             },
         });
 
         if (!user) {
             res.status(401).json({
-                message: `User with mail ${email} Not Found`
+                message: `User with username ${username} Not Found`
             });
             return;
         }
@@ -199,7 +213,8 @@ export const signin = async (req: Request, res: Response) => {
                 message: `${user.username} Logged In Successfully!`,
                 user: {
                     id: user.id,
-                    email: user.email
+                    email: user.email,
+                    username: user.username
                 }
             });
 
