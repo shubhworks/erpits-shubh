@@ -19,6 +19,7 @@ app.use(express.urlencoded({
 
 const allowedOrigins = [
   'http://localhost:3000',
+  'https://erpitsfe.vercel.app',
 ];
 
 const corsOptions: CorsOptions = {
